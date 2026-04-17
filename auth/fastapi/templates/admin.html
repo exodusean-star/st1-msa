@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}회원 관리{% endblock %}
+{% block container_class %}container{% endblock %}
+{% block style %}
+<style>
+  .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .page-header h2 { color: #2d3748; }
+  .stat-badge { background: #ebf8ff; color: #2b6cb0; padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; }
+  table { width: 100%; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-collapse: collapse; overflow: hidden; }
+  th { background: #2d3748; color: white; padding: 12px 16px; text-align: left; }
+  td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f7fafc; }
+  .badge-admin { background: #fefcbf; color: #744210; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+  .delete-form { display: inline; }
+  .delete-form button { background: #fc8181; color: white; border: none; padding: 4px 14px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: bold; }
+  .delete-form button:hover { background: #e53e3e; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="page-header">
+    <h2>👥 회원 관리</h2>
+    <span class="stat-badge">전체 회원 {{ total }}명</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th width="60">ID</th>
+        <th width="140">아이디</th>
+        <th>이메일</th>
+        <th width="180">가입일</th>
+        <th width="80">관리</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>
+          {{ u.username }}
+          {% if u.username == "admin" %}
+            <span class="badge-admin">관리자</span>
+          {% endif %}
+        </td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.created_at }}</td>
+        <td>
+          {% if u.username != "admin" %}
+          <form class="delete-form" method="post" action="/auth/admin/delete/{{ u.id }}"
+                onsubmit="return confirm('{{ u.username }} 회원을 삭제하시겠습니까?')">
+            <button type="submit">삭제</button>
+          </form>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

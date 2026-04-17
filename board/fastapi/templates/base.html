@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}ST1 Company{% endblock %}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f0f4f8; }
+    nav { background: #2d3748; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; }
+    nav a { color: white; text-decoration: none; margin-left: 20px; font-size: 0.95rem; }
+    nav a:hover { color: #90cdf4; }
+    .logo { color: white; font-size: 1.2rem; font-weight: bold; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-user { color: #90cdf4; font-size: 0.9rem; margin-right: 4px; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .btn { display: inline-block; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-size: 0.9rem; font-weight: bold; cursor: pointer; border: none; }
+    .btn-blue   { background: #4299e1; color: white; }
+    .btn-green  { background: #48bb78; color: white; }
+    .btn-red    { background: #fc8181; color: white; }
+    .btn-gray   { background: #718096; color: white; }
+    .btn-purple { background: #9f7aea; color: white; }
+    .btn:hover { opacity: 0.85; }
+  </style>
+  {% block style %}{% endblock %}
+</head>
+<body>
+  <nav>
+    <span class="logo">🏢 ST1 Company</span>
+    <div class="nav-right">
+      <a href="/">홈</a>
+      <a href="/company/">회사소개</a>
+      <a href="/board/">게시판</a>
+      <a href="/guestbook/">방명록</a>
+      {% if user %}
+        <span class="nav-user">👤 {{ user.username }}</span>
+        {% if user.username == "admin" %}
+          <a href="{{ auth_url }}/auth/admin" class="btn btn-purple" style="padding:4px 12px;font-size:0.8rem;">관리자</a>
+        {% endif %}
+        <a href="/board/logout" class="btn btn-gray" style="padding:4px 12px;font-size:0.8rem;">로그아웃</a>
+        {% else %}
+        <a href="{{ auth_url }}/auth/login?callback={{ board_url }}/board/callback?next=/board/"
+   class="btn btn-blue"
+   style="padding:4px 12px;font-size:0.8rem;">로그인</a>
+        {% endif %}
+    </div>
+  </nav>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

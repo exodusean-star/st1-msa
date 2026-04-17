@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ST1 Portal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #1a202c; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    h1 { color: white; font-size: 2.5rem; margin-bottom: 12px; text-align: center; }
+    p { color: #a0aec0; margin-bottom: 48px; text-align: center; }
+    .cards { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .card { background: white; padding: 36px 28px; border-radius: 16px; width: 200px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.3); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card .icon { font-size: 3rem; margin-bottom: 12px; }
+    .card h3 { color: #2d3748; margin-bottom: 8px; }
+    .card p { color: #718096; font-size: 0.85rem; margin-bottom: 20px; }
+    .btn { display: inline-block; padding: 8px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+    .btn-blue   { background: #4299e1; color: white; }
+    .btn-green  { background: #48bb78; color: white; }
+    .btn-purple { background: #9f7aea; color: white; }
+    .btn:hover { opacity: 0.85; }
+    footer { color: #4a5568; font-size: 0.8rem; margin-top: 48px; }
+  </style>
+</head>
+<body>
+  <h1>🌐 ST1 Portal</h1>
+  <p>서비스를 선택해주세요</p>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🏢</div>
+      <h3>회사 소개</h3>
+      <p>ST1 Company 소개 페이지</p>
+      <a href="/company/" class="btn btn-blue">바로가기</a>
+    </div>
+    <div class="card">
+      <div class="icon">📋</div>
+      <h3>게시판</h3>
+      <p>자유롭게 글을 남겨보세요</p>
+      <a href="/board/" class="btn btn-green">바로가기</a>
+    </div>
+    <div class="card">
+      <div class="icon">📝</div>
+      <h3>방명록</h3>
+      <p>방명록을 남겨보세요</p>
+      <a href="/guestbook/" class="btn btn-purple">바로가기</a>
+    </div>
+  </div>
+  <footer>© 2026 ST1 Portal</footer>
+</body>
+</html>

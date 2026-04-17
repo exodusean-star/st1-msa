@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block style %}
+<style>
+  .card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .post-header { border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px; }
+  h2 { color: #2d3748; margin-bottom: 8px; }
+  .meta { color: #a0aec0; font-size: 0.85rem; }
+  .content { color: #4a5568; line-height: 1.8; min-height: 200px; white-space: pre-wrap; }
+  .footer { margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; align-items: center; }
+</style>
+{% endblock %}
+{% block content %}
+  {% if post %}
+  <div class="card">
+    <div class="post-header">
+      <h2>{{ post.title }}</h2>
+      <span class="meta">{{ post.author }} · {{ post.created_at }}</span>
+    </div>
+    <div class="content">{{ post.content }}</div>
+    <div class="footer">
+      <a href="/board/" class="btn btn-blue">목록으로</a>
+      {% if user and (user.username == "admin" or user.username == post.author) %}
+      <a href="/board/edit/{{ post.id }}" class="btn btn-blue">수정</a>
+      <form method="post" action="/board/delete/{{ post.id }}" style="display:inline"
+            onsubmit="return confirm('삭제하시겠습니까?')">
+        <button type="submit" class="btn btn-red">삭제</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p>게시글을 찾을 수 없습니다.</p>
+  {% endif %}
+{% endblock %}

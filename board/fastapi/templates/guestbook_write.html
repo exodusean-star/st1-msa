@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}방명록 작성{% endblock %}
+{% block style %}
+<style>
+  .card { background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h2 { color: #2d3748; margin-bottom: 24px; }
+  .form-group { margin-bottom: 20px; }
+  label { display: block; color: #4a5568; font-size: 0.9rem; margin-bottom: 6px; font-weight: bold; }
+  input, textarea { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+  textarea { height: 160px; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: #9f7aea; }
+  .form-footer { display: flex; gap: 10px; justify-content: flex-end; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="card">
+    <h2>📝 방명록 작성</h2>
+    <form method="post" action="/guestbook/write">
+      <div class="form-group">
+        <label>이름</label>
+        <input type="text" name="author" placeholder="이름을 입력하세요" required>
+      </div>
+      <div class="form-group">
+        <label>메시지</label>
+        <textarea name="message" placeholder="방명록을 남겨주세요" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>비밀번호 <span style="color:#a0aec0;font-weight:normal;font-size:0.85rem;">(삭제 시 필요)</span></label>
+        <input type="password" name="password" placeholder="비밀번호를 입력하세요" required>
+      </div>
+      <div class="form-footer">
+        <a href="/guestbook/" class="btn btn-red">취소</a>
+        <button type="submit" class="btn btn-purple">등록</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}방명록{% endblock %}
+{% block style %}
+<style>
+  .board-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  h2 { color: #2d3748; }
+  .entry { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 16px; }
+  .entry-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .entry-meta { display: flex; flex-direction: column; gap: 4px; }
+  .author { font-weight: bold; color: #2d3748; }
+  .date { color: #a0aec0; font-size: 0.85rem; }
+  .message { color: #4a5568; line-height: 1.7; margin-bottom: 16px; }
+  .delete-area { display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+  .delete-area input { padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem; width: 150px; }
+  .delete-area input:focus { outline: none; border-color: #fc8181; }
+  .btn-delete { background: #fc8181; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: bold; }
+  .btn-delete:hover { background: #e53e3e; }
+  .empty { text-align: center; padding: 40px; color: #a0aec0; background: white; border-radius: 12px; }
+  .error-msg { background: #fff5f5; color: #c53030; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; border: 1px solid #feb2b2; }
+</style>
+{% endblock %}
+{% block content %}
+  <div class="board-header">
+    <h2>📝 방명록</h2>
+    <a href="/guestbook/write" class="btn btn-purple">글 남기기</a>
+  </div>
+
+  {% if error %}
+    <div class="error-msg">{{ error }}</div>
+  {% endif %}
+
+  {% if entries %}
+    {% for entry in entries %}
+    <div class="entry">
+      <div class="entry-header">
+        <div class="entry-meta">
+          <span class="author">{{ entry.author }}</span>
+          <span class="date">{{ entry.created_at }}</span>
+        </div>
+      </div>
+      <div class="message">{{ entry.message }}</div>
+      <div class="delete-area">
+        {% if user and user.username == "admin" %}
+          <form method="post" action="/guestbook/delete/{{ entry.id }}"
+                onsubmit="return confirm('삭제하시겠습니까?')">
+            <input type="hidden" name="password" value="__admin__">
+            <button type="submit" class="btn-delete">관리자 삭제</button>
+          </form>
+        {% else %}
+          <form method="post" action="/guestbook/delete/{{ entry.id }}">
+            <input type="password" name="password" placeholder="작성 시 비밀번호 입력">
+            <button type="submit" class="btn-delete">삭제</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">아직 방명록이 없어요. 첫 번째로 글을 남겨보세요!</div>
+  {% endif %}
+{% endblock %}
