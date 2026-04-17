@@ -1,0 +1,100 @@
+name: Deploy Auth Service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'auth/**'
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REGISTRY: 476293896981.dkr.ecr.ap-south-1.amazonaws.com
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      fastapi: ${{ steps.filter.outputs.fastapi }}
+      nginx: ${{ steps.filter.outputs.nginx }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            fastapi:
+              - 'auth/fastapi/**'
+            nginx:
+              - 'auth/nginx/**'
+
+  deploy-fastapi:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.fastapi == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::476293896981:role/github-actions-st1-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push auth-fastapi
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-auth-fastapi:${{ github.sha }}
+          docker build -t $IMAGE ./auth/fastapi
+          docker push $IMAGE
+
+      - name: Update kubeconfig (cluster2)
+        run: |
+          aws eks update-kubeconfig \
+            --name st1-eks-cluster-2 \
+            --region $AWS_REGION
+
+      - name: Deploy to cluster2
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-auth-fastapi:${{ github.sha }}
+          kubectl set image deployment/auth-fastapi-deployment auth-fastapi=$IMAGE
+          kubectl rollout status deployment/auth-fastapi-deployment
+
+  deploy-nginx:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.nginx == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::476293896981:role/github-actions-st1-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push auth-nginx
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-auth-nginx:${{ github.sha }}
+          docker build -t $IMAGE ./auth/nginx
+          docker push $IMAGE
+
+      - name: Update kubeconfig (cluster2)
+        run: |
+          aws eks update-kubeconfig \
+            --name st1-eks-cluster-2 \
+            --region $AWS_REGION
+
+      - name: Deploy to cluster2
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-auth-nginx:${{ github.sha }}
+          kubectl set image deployment/auth-nginx-deployment auth-nginx=$IMAGE
+          kubectl rollout status deployment/auth-nginx-deployment

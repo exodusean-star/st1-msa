@@ -1,0 +1,100 @@
+name: Deploy Board Service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'board/**'
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REGISTRY: 476293896981.dkr.ecr.ap-south-1.amazonaws.com
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      fastapi: ${{ steps.filter.outputs.fastapi }}
+      nginx: ${{ steps.filter.outputs.nginx }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            fastapi:
+              - 'board/fastapi/**'
+            nginx:
+              - 'board/nginx/**'
+
+  deploy-fastapi:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.fastapi == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::476293896981:role/github-actions-st1-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push board-fastapi
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-board-fastapi:${{ github.sha }}
+          docker build -t $IMAGE ./board/fastapi
+          docker push $IMAGE
+
+      - name: Update kubeconfig (cluster1)
+        run: |
+          aws eks update-kubeconfig \
+            --name st1-eks-cluster \
+            --region $AWS_REGION
+
+      - name: Deploy to cluster1
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-board-fastapi:${{ github.sha }}
+          kubectl set image deployment/fastapi-deployment fastapi=$IMAGE
+          kubectl rollout status deployment/fastapi-deployment
+
+  deploy-nginx:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.nginx == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::476293896981:role/github-actions-st1-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push board-nginx
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-board-nginx:${{ github.sha }}
+          docker build -t $IMAGE ./board/nginx
+          docker push $IMAGE
+
+      - name: Update kubeconfig (cluster1)
+        run: |
+          aws eks update-kubeconfig \
+            --name st1-eks-cluster \
+            --region $AWS_REGION
+
+      - name: Deploy to cluster1
+        run: |
+          IMAGE=$ECR_REGISTRY/st1-board-nginx:${{ github.sha }}
+          kubectl set image deployment/nginx-deployment nginx=$IMAGE
+          kubectl rollout status deployment/nginx-deployment
