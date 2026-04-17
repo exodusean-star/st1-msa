@@ -3,3 +3,8 @@
 
 # 예시 파일은 커밋 허용
 !**/.env.example
+
+# SSH 키
+*.pem
+id_ed25519*
+id_rsa*
