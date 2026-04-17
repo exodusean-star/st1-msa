@@ -78,7 +78,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: fastapi
-        image: 476293896981.dkr.ecr.ap-south-1.amazonaws.com/st1-board-fastapi:v12
+        image: exodusean/st1-board-fastapi:3d66c8706e1fb41d8c76bf8bff70bfdb417d5df8
         ports:
         - containerPort: 8000
         envFrom:
