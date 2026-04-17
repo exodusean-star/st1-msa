@@ -600,7 +600,7 @@ kubectl config use-context std-001@st1-eks-cluster.ap-south-1.eksctl.io
 kubectl delete secret st1-board-secret --ignore-not-found
 kubectl create secret generic st1-board-secret --from-env-file=/home/sean/workspace/st1-msa/board/.env
 
-kubectl apply -f ~/workspace/st1-msa/board/deploy.yaml
+kubectl apply -f ~/workspace/st1-msa/k8s/board/deploy.yaml
 kubectl rollout restart deployment/fastapi-deployment
 kubectl rollout restart deployment/nginx-deployment
 kubectl rollout status deployment/fastapi-deployment
@@ -614,7 +614,7 @@ kubectl config use-context std-001@st1-eks-cluster-2.ap-south-1.eksctl.io
 kubectl delete secret st1-auth-secret --ignore-not-found
 kubectl create secret generic st1-auth-secret --from-env-file=/home/sean/workspace/st1-msa/auth/.env
 
-kubectl apply -f ~/workspace/st1-msa/auth/deploy.yaml
+kubectl apply -f ~/workspace/st1-msa/k8s/auth/deploy.yaml
 kubectl rollout restart deployment/auth-fastapi-deployment
 kubectl rollout status deployment/auth-fastapi-deployment
 ```

@@ -315,11 +315,11 @@ kubectl --context="std-001@st1-eks-cluster-2.ap-south-1.eksctl.io" \
 ```bash
 # cluster1
 kubectl --context="std-001@st1-eks-cluster.ap-south-1.eksctl.io" \
-  apply -f ~/workspace/st1-msa/board/deploy.yaml
+  apply -f ~/workspace/st1-msa/k8s/board/deploy.yaml
 
 # cluster2
 kubectl --context="std-001@st1-eks-cluster-2.ap-south-1.eksctl.io" \
-  apply -f ~/workspace/st1-msa/auth/deploy.yaml
+  apply -f ~/workspace/st1-msa/k8s/auth/deploy.yaml
 ```
 
 배포 후 auth ALB ADDRESS 확인:
