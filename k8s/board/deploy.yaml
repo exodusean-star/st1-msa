@@ -29,7 +29,7 @@ spec:
         - containerPort: 80
         env:
         - name: AUTH_ALB
-          value: "internal-k8s-default-st1authi-2dddb1f60e-1809381502.ap-south-1.elb.amazonaws.com"
+          value: "internal-k8s-default-st1authi-2dddb1f60e-2025207342.ap-south-1.elb.amazonaws.com"
         readinessProbe:
           httpGet:
             path: /
