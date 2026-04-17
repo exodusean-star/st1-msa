@@ -206,4 +206,4 @@ async def health():
     except Exception:
         from fastapi.responses import JSONResponse
         return JSONResponse(status_code=503, content={"status": "unhealthy", "detail": "db connection failed"})
-    return {"status": "ok"}
+    return {"status": "ok", "service": "auth"}
