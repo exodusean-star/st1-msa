@@ -45,13 +45,13 @@ jobs:
 
       - name: Build and push auth-fastapi
         run: |
-          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/st1-auth-fastapi:${{ github.sha }}
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/st1-msa-auth-fastapi:${{ github.sha }}
           docker build -t $IMAGE ./auth/fastapi
           docker push $IMAGE
 
       - name: Update image tag in deploy.yaml
         run: |
-          sed -i "s|image: .*/st1-auth-fastapi:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/st1-auth-fastapi:${{ github.sha }}|" k8s/auth/deploy.yaml
+          sed -i "s|image: .*auth-fastapi:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/st1-msa-auth-fastapi:${{ github.sha }}|" k8s/auth/deploy.yaml
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add k8s/auth/deploy.yaml
@@ -72,13 +72,13 @@ jobs:
 
       - name: Build and push auth-nginx
         run: |
-          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/st1-auth-nginx:${{ github.sha }}
+          IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/st1-msa-auth-nginx:${{ github.sha }}
           docker build -t $IMAGE ./auth/nginx
           docker push $IMAGE
 
       - name: Update image tag in deploy.yaml
         run: |
-          sed -i "s|image: .*/st1-auth-nginx:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/st1-auth-nginx:${{ github.sha }}|" k8s/auth/deploy.yaml
+          sed -i "s|image: .*auth-nginx:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/st1-msa-auth-nginx:${{ github.sha }}|" k8s/auth/deploy.yaml
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add k8s/auth/deploy.yaml
